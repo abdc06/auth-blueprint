@@ -12,6 +12,24 @@ spring:
   application:
     name: auth-01-jwt-basic
 
+jwt:
+  header: Authorization
+  secret: ${JWT_SECRET}
+  refresh-token-secret: ${JWT_REFRESH_TOKEN_SECRET}
+  access-token-validity-in-seconds: 3600
+  refresh-token-validity-in-seconds: 43200
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    display-request-duration: true
+  api-docs:
+    path: /v3/api-docs
+  show-actuator: true
+
 ---
 spring:
   config:

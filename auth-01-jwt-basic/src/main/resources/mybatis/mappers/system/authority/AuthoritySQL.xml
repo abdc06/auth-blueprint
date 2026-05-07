@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.auth.blueprint.system.authority.mapper.AuthorityMapper">
+
+    <select id="selectList" parameterType="DataMap" resultType="DataMap">
+        /* [SQL_ID:AuthorityMapper.selectList]*/
+        SELECT ROW_NUMBER() OVER()  AS RN
+             , COUNT(1) OVER()      AS TOTAL_COUNT
+             , A.*
+        FROM   (
+        SELECT A.AUTHORITY_ID
+             , A.AUTHORITY_NAME
+             , A.AUTHORITY_TYPE
+             , A.DESCRIPTION
+             , A.CREATED_BY
+             , TO_CHAR(A.CREATED_AT, 'YYYY-MM-DD HH24:MI') AS CREATED_AT
+        FROM   SYS_AUTHORITY A
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+        <if test='searchText != null and searchText != ""'>
+            <choose>
+                <when test='"A".equals(searchItem)'>
+                    AND (A.AUTHORITY_ID LIKE '%' || #{searchText} || '%' OR A.AUTHORITY_NAME LIKE '%' || #{searchText} || '%')
+                </when>
+                <when test='"I".equals(searchItem)'>
+                    AND A.AUTHORITY_ID LIKE '%' || #{searchText} || '%'
+                </when>
+                <when test='"N".equals(searchItem)'>
+                    AND A.AUTHORITY_NAME LIKE '%' || #{searchText} || '%'
+                </when>
+            </choose>
+        </if>
+    </trim>
+        ORDER BY A.AUTHORITY_TYPE ASC, A.AUTHORITY_ID ASC
+        ) A
+        <if test="pageSize != null and pageSize != 0 and offset != null">
+            LIMIT #{pageSize} OFFSET #{offset}
+        </if>
+    </select>
+
+    <select id="selectOne" parameterType="DataMap" resultType="DataMap">
+        /* [SQL_ID:AuthorityMapper.selectOne]*/
+        SELECT A.AUTHORITY_ID
+             , A.AUTHORITY_NAME
+             , A.AUTHORITY_TYPE
+             , A.DESCRIPTION
+             , A.CREATED_BY
+             , TO_CHAR(A.CREATED_AT, 'YYYY-MM-DD HH24:MI') AS CREATED_AT
+        FROM   SYS_AUTHORITY A
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            AND A.AUTHORITY_ID = #{authorityId}
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="DataMap">
+        /* [SQL_ID:AuthorityMapper.insert]*/
+        INSERT INTO SYS_AUTHORITY (
+              AUTHORITY_ID
+            , AUTHORITY_NAME
+            , AUTHORITY_TYPE
+            , DESCRIPTION
+            , CREATED_BY
+        ) VALUES (
+              #{authorityId}
+            , #{authorityName}
+            , #{authorityType}
+            , #{description}
+            , #{createdBy}
+         )
+    </insert>
+
+    <update id="update" parameterType="DataMap">
+        /* [SQL_ID:AuthorityMapper.update]*/
+        UPDATE SYS_AUTHORITY
+        <set>
+              AUTHORITY_NAME     = #{authorityName}
+            , AUTHORITY_TYPE  = #{authorityType}
+            , DESCRIPTION  = #{description}
+            , UPDATED_BY       = #{updatedBy}
+            , UPDATED_AT      = NOW()
+        </set>
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            AND AUTHORITY_ID   = #{authorityId}
+        </trim>
+    </update>
+
+    <delete id="delete" parameterType="DataMap">
+        /* [SQL_ID:AuthorityMapper.delete]*/
+        DELETE FROM SYS_AUTHORITY
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            AND AUTHORITY_ID   = #{authorityId}
+        </trim>
+    </delete>
+</mapper>

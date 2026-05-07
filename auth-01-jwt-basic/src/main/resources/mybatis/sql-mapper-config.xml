@@ -11,4 +11,9 @@
         <setting name="jdbcTypeForNull" value="NULL" />
     </settings>
 
+    <typeAliases>
+        <typeAlias alias="DataMap" type="org.example.auth.blueprint.common.model.DataMap"/>
+        <typeAlias alias="Account" type="org.example.auth.blueprint.security.model.Account"/>
+    </typeAliases>
+
 </configuration>
