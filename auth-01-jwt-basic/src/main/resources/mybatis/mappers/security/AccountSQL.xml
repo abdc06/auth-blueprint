@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.auth.blueprint.security.mapper.AccountMapper">
+
+    <select id="selectByUserId" parameterType="String" resultType="Account">
+        /* [SQL_ID:AccountMapper.selectByUserId]*/
+        SELECT A.USER_ID
+             , A.USER_PASSWORD
+             , A.USER_NAME
+             , A.USER_EMAIL
+             , A.USER_STATUS
+             , A.LOGIN_FAIL_COUNT
+             , A.TOKEN_WEIGHT
+             , A.CREATED_BY
+             , TO_CHAR(A.CREATED_AT, 'YYYY-MM-DD HH24:MI') AS CREATED_AT
+        FROM   SYS_USER A
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            AND A.USER_ID = #{userId}
+        </trim>
+    </select>
+
+</mapper>

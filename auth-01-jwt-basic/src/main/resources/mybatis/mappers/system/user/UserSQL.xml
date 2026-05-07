@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.auth.blueprint.system.user.mapper.UserMapper">
+
+    <select id="selectList" parameterType="DataMap" resultType="DataMap">
+        /* [SQL_ID:UserMapper.selectList]*/
+        SELECT ROW_NUMBER() OVER()  AS RN
+             , COUNT(1) OVER()      AS TOTAL_COUNT
+             , A.*
+        FROM   (
+            SELECT A.USER_ID
+                 , A.USER_NAME
+                 , A.USER_EMAIL
+                 , A.USER_STATUS
+                 , A.LOGIN_FAIL_COUNT
+                 , A.CREATED_BY
+                 , TO_CHAR(A.CREATED_AT, 'YYYY-MM-DD HH24:MI') AS CREATED_AT
+            FROM   SYS_USER A
+    <trim prefix="WHERE" prefixOverrides="AND|OR">
+        <if test='searchText != null and searchText != ""'>
+            <choose>
+                <when test='"A".equals(searchItem)'>
+                    AND (A.USER_ID LIKE '%' || #{searchText} || '%' OR A.USER_NAME LIKE '%' || #{searchText} || '%')
+                </when>
+                <when test='"I".equals(searchItem)'>
+                    AND A.USER_ID LIKE '%' || #{searchText} || '%'
+                </when>
+                <when test='"N".equals(searchItem)'>
+                    AND A.USER_NAME LIKE '%' || #{searchText} || '%'
+                </when>
+            </choose>
+        </if>
+    </trim>
+            ORDER BY A.USER_ID ASC
+        ) A
+    <if test="pageSize != null and pageSize != 0 and offset != null">
+        LIMIT #{pageSize} OFFSET #{offset}
+    </if>
+    </select>
+
+    <select id="selectOne" parameterType="DataMap" resultType="DataMap">
+        /* [SQL_ID:UserMapper.selectOne]*/
+        SELECT A.USER_ID
+             , A.USER_PASSWORD
+             , A.USER_NAME
+             , A.USER_EMAIL
+             , A.USER_STATUS
+             , A.LOGIN_FAIL_COUNT
+             , A.TOKEN_WEIGHT
+             , A.CREATED_BY
+             , TO_CHAR(A.CREATED_AT, 'YYYY-MM-DD HH24:MI') AS CREATED_AT
+        FROM   SYS_USER A
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            AND A.USER_ID = #{userId}
+        </trim>
+    </select>
+
+    <select id="selectByUserIdAndUserPassword" parameterType="DataMap" resultType="DataMap">
+        /* [SQL_ID:UserMapper.selectByUserIdAndUserPassword]*/
+        SELECT A.USER_ID
+             , A.USER_PASSWORD
+             , A.USER_NAME
+             , A.USER_EMAIL
+             , A.USER_STATUS
+             , A.LOGIN_FAIL_COUNT
+             , A.CREATED_BY
+             , TO_CHAR(A.CREATED_AT, 'YYYY-MM-DD HH24:MI') AS CREATED_AT
+        FROM   SYS_USER A
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            AND A.USER_ID = #{userId}
+            AND A.USER_PASSWORD = #{userPassword}
+        </trim>
+    </select>
+
+    <select id="selectByUserEmail" parameterType="DataMap" resultType="DataMap">
+        /* [SQL_ID:UserMapper.selectByUserEmail]*/
+        SELECT A.USER_ID
+             , A.USER_PASSWORD
+             , A.USER_NAME
+             , A.USER_EMAIL
+             , A.USER_STATUS
+             , A.LOGIN_FAIL_COUNT
+             , A.CREATED_BY
+             , TO_CHAR(A.CREATED_AT, 'YYYY-MM-DD HH24:MI') AS CREATED_AT
+        FROM   SYS_USER A
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            AND A.USER_EMAIL = #{userEmail}
+        </trim>
+    </select>
+
+    <insert id="insert" parameterType="DataMap">
+        /* [SQL_ID:UserMapper.insert]*/
+        INSERT INTO SYS_USER (
+              USER_ID
+            , USER_PASSWORD
+            , USER_NAME
+            , USER_EMAIL
+            , CREATED_BY
+            , UPDATED_BY
+        ) VALUES (
+              #{userId}
+            , #{userPassword}
+            , #{userName}
+            , #{userEmail}
+            , #{createdBy}
+            , #{updatedBy}
+        )
+    </insert>
+
+    <update id="update" parameterType="DataMap">
+        /* [SQL_ID:UserMapper.update]*/
+        UPDATE SYS_USER
+        <set>
+              USER_NAME     = #{userName}
+            , USER_EMAIL    = #{userEmail}
+            , UPDATED_BY    = #{updatedBy}
+            , UPDATED_AT    = NOW()
+        </set>
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            AND USER_ID = #{userId}
+        </trim>
+    </update>
+
+    <update id="delete" parameterType="DataMap">
+        /* [SQL_ID:UserMapper.delete]*/
+        DELETE FROM SYS_USER
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            AND USER_ID = #{userId}
+        </trim>
+    </update>
+
+</mapper>

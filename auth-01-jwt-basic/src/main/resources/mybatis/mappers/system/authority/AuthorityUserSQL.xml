@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.auth.blueprint.system.authority.mapper.AuthorityUserMapper">
+
+    <select id="selectAuthorityList" parameterType="String" resultType="DataMap">
+        /* [SQL_ID:AuthorityUserMapper.selectAuthorityList]*/
+        SELECT ROW_NUMBER() OVER()  AS RN
+             , COUNT(1) OVER()      AS TOTAL_COUNT
+             , A.*
+        FROM (
+            SELECT B.AUTHORITY_ID
+                 , B.AUTHORITY_NAME
+                 , B.AUTHORITY_TYPE
+                 , B.DESCRIPTION
+                 , B.CREATED_BY
+                 , TO_CHAR(B.CREATED_AT, 'YYYY-MM-DD HH24:MI') AS CREATED_AT
+                 , A.USER_ID
+            FROM   SYS_AUTHORITY_USER_MAP A
+            INNER JOIN SYS_AUTHORITY B ON A.AUTHORITY_ID = B.AUTHORITY_ID
+            <trim prefix="WHERE" prefixOverrides="AND|OR">
+                AND A.USER_ID = #{userId}
+            </trim>
+        ) A
+    </select>
+
+    <select id="selectUserList" parameterType="String" resultType="DataMap">
+        /* [SQL_ID:AuthorityUserMapper.selectUserList]*/
+        SELECT ROW_NUMBER() OVER()  AS RN
+             , COUNT(1) OVER()      AS TOTAL_COUNT
+             , A.*
+        FROM (
+            SELECT B.AUTHORITY_ID
+                 , B.AUTHORITY_NAME
+                 , B.AUTHORITY_TYPE
+                 , B.DESCRIPTION
+                 , B.CREATED_BY
+                 , TO_CHAR(B.CREATED_AT, 'YYYY-MM-DD HH24:MI') AS CREATED_AT
+                 , A.USER_ID
+            FROM   SYS_AUTHORITY_USER_MAP A
+            INNER JOIN SYS_AUTHORITY B ON A.AUTHORITY_ID = B.AUTHORITY_ID
+            <trim prefix="WHERE" prefixOverrides="AND|OR">
+                AND A.AUTHORITY_ID = #{authorityId}
+            </trim>
+        ) A
+    </select>
+
+    <insert id="insert" parameterType="DataMap">
+        /* [SQL_ID:AuthorityUserMapper.insert]*/
+        INSERT INTO SYS_AUTHORITY_USER_MAP (
+              AUTHORITY_ID
+            , USER_ID
+        ) VALUES (
+              #{authorityId}
+            , #{userId}
+        )
+    </insert>
+
+    <insert id="insertList" parameterType="DataMap">
+        /* [SQL_ID:AuthorityUserMapper.insertList]*/
+        INSERT INTO SYS_AUTHORITY_USER_MAP (
+              AUTHORITY_ID
+            , USER_ID
+        ) VALUES
+        <foreach collection="list" item="row" separator="),(" open="(" close=")">
+              #{row.authorityId}
+            , #{row.userId}
+        </foreach>
+    </insert>
+
+    <delete id="delete" parameterType="DataMap">
+        /* [SQL_ID:AuthorityUserMapper.delete]*/
+        DELETE FROM SYS_AUTHORITY_USER_MAP
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            AND AUTHORITY_ID = #{authorityId}
+            AND USER_ID = #{userId}
+        </trim>
+    </delete>
+
+    <delete id="deleteByUserId" parameterType="String">
+        /* [SQL_ID:AuthorityUserMapper.deleteByUserId]*/
+        DELETE FROM SYS_AUTHORITY_USER_MAP
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            AND USER_ID = #{userId}
+        </trim>
+    </delete>
+
+    <delete id="deleteByAuthorityId" parameterType="String">
+        /* [SQL_ID:AuthorityUserMapper.deleteByAuthorityId]*/
+        DELETE FROM SYS_AUTHORITY_USER_MAP
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            AND AUTHORITY_ID = #{authorityId}
+        </trim>
+    </delete>
+
+    <select id="existsAuthorization" parameterType="DataMap" resultType="Boolean">
+        /* [SQL_ID:AuthorityUserMapper.existsAuthorization]*/
+        SELECT EXISTS (
+            SELECT 1
+            FROM   SYS_USER A
+            INNER JOIN SYS_AUTHORITY_USER_MAP B
+                ON A.USER_ID = B.USER_ID
+            INNER JOIN SYS_AUTHORITY_MENU_MAP C
+                ON B.AUTHORITY_ID = C.AUTHORITY_ID
+            INNER JOIN SYS_MENU D
+                ON C.MENU_NO = D.MENU_NO
+            <trim prefix="WHERE" prefixOverrides="AND|OR">
+                AND A.USER_ID = #{userId}
+                AND D.MENU_PATH LIKE CONCAT(COALESCE(#{url}, ''), '%')
+            </trim>
+        )
+    </select>
+</mapper>

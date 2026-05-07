@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <property name="CONSOLE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %magenta([%thread]) %highlight([%-3level]) %logger{5} - %msg %n" />
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/app-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory> </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.example.auth.blueprint" level="info" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="org.springframework.web" level="off" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+
+    <logger name="jdbc" level="off" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="jdbc.sqlonly" level="off" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="jdbc.sqltiming" level="info" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="jdbc.audit" level="off" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="jdbc.resultset" level="off" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="jdbc.resultsettable" level="off" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="console"/>
+<!--        <appender-ref ref="file"/>-->
+    </root>
+</configuration>
