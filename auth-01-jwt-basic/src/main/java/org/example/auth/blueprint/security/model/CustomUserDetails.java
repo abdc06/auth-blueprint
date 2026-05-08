@@ -16,13 +16,12 @@ public class CustomUserDetails implements UserDetails {
 
     private final Account account;
 
-    //토큰에 들어가는 데이터
     public DataMap getAccountInfo() {
         DataMap accountInfo = new DataMap();
         accountInfo.put("userId", account.getUserId());
         accountInfo.put("userName", account.getUserName());
+        accountInfo.put("userEmail", account.getUserEmail());
         accountInfo.put("authorities", account.getAuthorities());
-        accountInfo.put("tokenWeight", account.getTokenWeight());
         return accountInfo;
     }
 

@@ -48,6 +48,16 @@ public class Auth01JwtBasicApplication implements ApplicationRunner {
             map.put("description", "관리자");
             authorityMapper.insert(map);
         }
+
+        map.put("authorityId", "ROLE_USER");
+        adminAuthorityInfo = authorityMapper.selectOne(map);
+
+        if (adminAuthorityInfo == null) {
+            map.put("authorityType", "SYS");
+            map.put("authorityName", "일반사용자");
+            map.put("description", "일반사용자");
+            authorityMapper.insert(map);
+        }
     }
 
     private void initUser() {
@@ -59,6 +69,20 @@ public class Auth01JwtBasicApplication implements ApplicationRunner {
             map.put("userPassword", passwordEncoder.encode("admin"));
             map.put("userName", "관리자");
             map.put("authorityId", "ROLE_ADMIN");
+            userMapper.insert(map);
+            authorityUserMapper.insert(map);
+
+            map.put("authorityId", "ROLE_USER");
+            authorityUserMapper.insert(map);
+        }
+
+        map.put("userId", "user");
+        DataMap userInfo = userMapper.selectOne(map);
+
+        if (userInfo == null) {
+            map.put("userPassword", passwordEncoder.encode("user"));
+            map.put("userName", "사용자1");
+            map.put("authorityId", "ROLE_USER");
             userMapper.insert(map);
             authorityUserMapper.insert(map);
         }

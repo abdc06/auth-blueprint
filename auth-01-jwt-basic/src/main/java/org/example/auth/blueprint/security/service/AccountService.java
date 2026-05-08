@@ -42,8 +42,12 @@ public class AccountService {
         String refreshToken = refreshTokenProvider.createToken(authentication, tokenWeight);
 
         DataMap response = new DataMap();
-        response.put("accessToken", accessToken);
-        response.put("refreshToken", refreshToken);
+        DataMap token = new DataMap();
+        token.put("accessToken", accessToken);
+        token.put("refreshToken", refreshToken);
+
+        response.put("userInfo", userDetails.getAccountInfo());
+        response.put("token", token);
 
         return response;
     }
@@ -68,6 +72,7 @@ public class AccountService {
         DataMap response = new DataMap();
         response.put("accessToken", accessToken);
         response.put("refreshToken", refreshToken);
+
         return response;
     }
 }
